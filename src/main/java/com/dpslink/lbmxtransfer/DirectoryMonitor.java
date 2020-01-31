@@ -12,11 +12,19 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.ibm.as400.access.AS400;
@@ -43,28 +51,29 @@ public class DirectoryMonitor {
 	
 	LbmxFile lbmxFile = new LbmxFile();
 	
+	
 	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
+	
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMonitor.class);
 
 	public DirectoryMonitor() {
 		super();
 	} 
 	
 	private FtpClient ftpClient;
-
 	
-	@PostConstruct
-	public void monitorDirectory() throws IOException, InterruptedException, URISyntaxException, AS400SecurityException, ObjectAlreadyExistsException {
+	@Async
+	public CompletableFuture<Void> monitorDirectory() throws IOException, InterruptedException, URISyntaxException, AS400SecurityException, ObjectAlreadyExistsException {
 		WatchKey key;		
 		WatchService watchService = FileSystems.getDefault().newWatchService();
-	    Path path = Paths.get(ftpOutDirectory);
+	    Path path = Paths.get(ftpOutDirectory); 
 	    
 	    ftpClient = new FtpClient(ftpAddress, 21, username, password);
 		path.register(watchService,StandardWatchEventKinds.ENTRY_CREATE);
 
-		
 		while((key=watchService.take())!=null)
 		{
-			
+			System.out.println("poll fired 2");
 			for (WatchEvent<?> event : key.pollEvents()) {
 				
 				ftpClient.open();
@@ -86,7 +95,25 @@ public class DirectoryMonitor {
 		}
 
 		watchService.close();
+		return null;
 	}
+	
+	
+	
+//	@Async
+//	public CompletableFuture<Void> printTheThing() {
+//	    try {
+//	        while (true) {
+//	            System.out.println("Inside Directory Monitor");
+//	            Thread.sleep(5 * 1000);
+//	        }
+//	    } catch (InterruptedException e) {
+//	        e.printStackTrace();
+//	    }
+//		return null;
+//	}
+	
+	
 	
 //	@PostConstruct
 //	public void monitorDirectory() throws IOException, InterruptedException, URISyntaxException {

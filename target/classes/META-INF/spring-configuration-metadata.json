@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "",
+      "type": "com.dpslink.lbmxtransfer.DirectoryMonitor",
+      "sourceType": "com.dpslink.lbmxtransfer.DirectoryMonitor"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
