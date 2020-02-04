@@ -46,7 +46,7 @@ public class InboundMonitor {
 				
 				ftpClient.open();
 				
-				Collection<String> documents = ftpClient.listFiles("/ryani/in/997/");
+				Collection<String> documents = ftpClient.listFiles("/lbmx/in/997/");
 				
 	//        ftpClient.putFileToPath(file, ftpRemoteDirectory + lbmxFile.getPoDateFileName());
 				
@@ -55,7 +55,7 @@ public class InboundMonitor {
 				documents.forEach(document -> {
 					System.out.println(document);
 				});
-				Thread.sleep(10 * 1000);
+				Thread.sleep(30 * 1000);
 	    	}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

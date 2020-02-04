@@ -52,7 +52,8 @@ public class DirectoryMonitor {
 	LbmxFile lbmxFile = new LbmxFile();
 	
 	
-	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
+//	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
+	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMonitor.class);
 
@@ -105,7 +106,7 @@ public class DirectoryMonitor {
 //	    try {
 //	        while (true) {
 //	            System.out.println("Inside Directory Monitor");
-//	            Thread.sleep(5 * 1000);
+//	            Thread.sleep(30 * 1000);
 //	        }
 //	    } catch (InterruptedException e) {
 //	        e.printStackTrace();
