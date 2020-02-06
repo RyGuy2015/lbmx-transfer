@@ -6,13 +6,14 @@ import java.net.URISyntaxException;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.ibm.as400.access.AS400SecurityException;
 import com.ibm.as400.access.ObjectAlreadyExistsException;
 
 
-@Service
+@Component
 public class ThreadHandler {
 	@Autowired
 	DirectoryMonitor directoryMonitor;
@@ -34,7 +35,7 @@ public class ThreadHandler {
 				e.printStackTrace();
 			}
 			try {
-				inboundMonitor.printTheThing();
+				inboundMonitor.importLbmxFiles();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -13,9 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class InboundMonitor {
 	
 	@Value( "${ftpRemoteDirectory}" )
@@ -30,15 +31,21 @@ public class InboundMonitor {
 	private String password;
 	@Value( "${ftpAddress}" ) 
 	private String ftpAddress;
+	@Value( "${ftpInDirectory}" )
+	private String ftpInDirectory;
 	
 	private FtpClient ftpClient;
+	
+	String[] inboundTypes = new String[] {"810/", "855/", "856/", "997/"};
+	
+	Collection<String> documents;
 	
 	public InboundMonitor() {
 		
 	}
 	
 	@Async
-	public CompletableFuture<Void> printTheThing() throws IOException {
+	public CompletableFuture<Void> importLbmxFiles() throws IOException {
 		
 	    try {
 	    	while(true) {
@@ -46,16 +53,25 @@ public class InboundMonitor {
 				
 				ftpClient.open();
 				
-				Collection<String> documents = ftpClient.listFiles("/lbmx/in/997/");
-				
-	//        ftpClient.putFileToPath(file, ftpRemoteDirectory + lbmxFile.getPoDateFileName());
+				for (String inboundType : inboundTypes) {
+					System.out.println("Type is: " + inboundType);
+					documents = ftpClient.listFiles("/lbmx/in/" + inboundType);
+					documents.forEach(document -> {
+						if (!document.contains("arc")) {
+							try {
+								ftpClient.downloadFile("/lbmx/in/" + inboundType + document, ftpInDirectory + document);
+								System.out.println(document);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					});
+					
+				}
 				
 				ftpClient.close();
-				
-				documents.forEach(document -> {
-					System.out.println(document);
-				});
-				Thread.sleep(30 * 1000);
+				Thread.sleep(60 * 1000);
 	    	}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -65,14 +81,6 @@ public class InboundMonitor {
 			e.printStackTrace();
 		}
 		
-//	    try {
-//	        while (true) {
-//	            System.out.println("Inside Inbound Monitor");
-//	            Thread.sleep(5 * 1000);
-//	        }
-//	    } catch (InterruptedException e) {
-//	        e.printStackTrace();
-//	    }
 		return null;
 	}
 

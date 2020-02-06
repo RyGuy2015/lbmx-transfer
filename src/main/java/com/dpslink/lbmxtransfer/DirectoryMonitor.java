@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.ibm.as400.access.AS400;
@@ -32,7 +33,7 @@ import com.ibm.as400.access.AS400SecurityException;
 import com.ibm.as400.access.IFSFile;
 import com.ibm.as400.access.ObjectAlreadyExistsException;
 
-@Service	
+@Component	
 @ConfigurationProperties
 public class DirectoryMonitor {
 	
@@ -52,8 +53,8 @@ public class DirectoryMonitor {
 	LbmxFile lbmxFile = new LbmxFile();
 	
 	
-//	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
-	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
+	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
+//	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMonitor.class);
 
@@ -84,10 +85,10 @@ public class DirectoryMonitor {
 				File file = new File(ftpOutDirectory + event.context());
 		        ftpClient.putFileToPath(file, ftpRemoteDirectory + lbmxFile.getPoDateFileName());
 		        
-	            Collection<String> files = ftpClient.listFiles(ftpRemoteDirectory);
-	            if (files.contains(lbmxFile.getPoDateFileName())) {
-	            	moveFile(ftpOutDirectory + lbmxFile.getOriginalFileName(), ftpSentDirectory + lbmxFile.getOriginalFileName());
-	            }
+//	            Collection<String> files = ftpClient.listFiles(ftpRemoteDirectory);
+//	            if (files.contains(lbmxFile.getPoDateFileName())) {
+//	            	moveFile(ftpOutDirectory + lbmxFile.getOriginalFileName(), ftpSentDirectory + lbmxFile.getOriginalFileName());
+//	            }
 	            
 				key.reset();
 				ftpClient.close();
@@ -114,40 +115,6 @@ public class DirectoryMonitor {
 //		return null;
 //	}
 	
-	
-	
-//	@PostConstruct
-//	public void monitorDirectory() throws IOException, InterruptedException, URISyntaxException {
-//		WatchKey key;		
-//		WatchService watchService = FileSystems.getDefault().newWatchService();
-//	    Path path = Paths.get(ftpOutDirectory);
-//	    
-//	    ftpClient = new FtpClient(ftpAddress, 21, username, password);
-//		path.register(watchService,StandardWatchEventKinds.ENTRY_CREATE);
-//
-//		
-//		while((key=watchService.take())!=null)
-//		{
-//			ftpClient.open();
-//			
-//			for (WatchEvent<?> event : key.pollEvents()) {
-//				lbmxFile.setOriginalFileName(event.context().toString());
-//				lbmxFile = parseLbmxFile(lbmxFile);//				System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
-//				File file = new File(ftpOutDirectory + event.context());
-//		        ftpClient.putFileToPath(file, ftpRemoteDirectory + lbmxFile.getPoDateFileName());
-//		        
-//	            Collection<String> files = ftpClient.listFiles(ftpRemoteDirectory);
-//	            if (files.contains(lbmxFile.getPoDateFileName())) {
-//	            	moveFile(ftpOutDirectory + lbmxFile.getOriginalFileName(), ftpSentDirectory + lbmxFile.getOriginalFileName());
-//	            }
-//		        
-//			}
-//			key.reset();
-//			ftpClient.close();
-//		}
-//
-//		watchService.close();
-//	}
 	
 	private void moveFile(String fromPath, String toPath) throws IOException, AS400SecurityException, ObjectAlreadyExistsException {
 		copyLbmxFile(system, fromPath, toPath);
