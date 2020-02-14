@@ -53,8 +53,8 @@ public class DirectoryMonitor {
 	LbmxFile lbmxFile = new LbmxFile();
 	
 	
-	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
-//	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
+//	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
+	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMonitor.class);
 
@@ -75,20 +75,20 @@ public class DirectoryMonitor {
 
 		while((key=watchService.take())!=null)
 		{
-			System.out.println("poll fired 2");
+
 			for (WatchEvent<?> event : key.pollEvents()) {
 				
 				ftpClient.open();
 				
 				lbmxFile.setOriginalFileName(event.context().toString());
-				lbmxFile = parseLbmxFile(lbmxFile);//				System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
+				lbmxFile = parseLbmxFile(lbmxFile);//			
 				File file = new File(ftpOutDirectory + event.context());
 		        ftpClient.putFileToPath(file, ftpRemoteDirectory + lbmxFile.getPoDateFileName());
 		        
-//	            Collection<String> files = ftpClient.listFiles(ftpRemoteDirectory);
-//	            if (files.contains(lbmxFile.getPoDateFileName())) {
-//	            	moveFile(ftpOutDirectory + lbmxFile.getOriginalFileName(), ftpSentDirectory + lbmxFile.getOriginalFileName());
-//	            }
+	            Collection<String> files = ftpClient.listFiles(ftpRemoteDirectory);
+	            if (files.contains(lbmxFile.getPoDateFileName())) {
+	            	moveFile(ftpOutDirectory + lbmxFile.getOriginalFileName(), ftpSentDirectory + lbmxFile.getOriginalFileName());
+	            }
 	            
 				key.reset();
 				ftpClient.close();
@@ -150,15 +150,14 @@ public class DirectoryMonitor {
 	 }
 	
 	private LbmxFile parseLbmxFile(LbmxFile lbmxFile) {
-		System.out.println("I'm in parseLbmxFile");
 		String[] parts = lbmxFile.getOriginalFileName().split("_");
 		lbmxFile.setLbmxKey(parts[0]);
 		lbmxFile.setCompanyNumber(parts[1]);
 		lbmxFile.setPoNumber(parts[2].substring(2));
 		lbmxFile.setPoDateFileName(parts[2] + "_" + parts[3]);
-		for (String part: parts) { 
-			System.out.println(part);
-		}
+//		for (String part: parts) { 
+//			System.out.println(part);
+//		}
 		System.out.println("LBMX Key: " + lbmxFile.getLbmxKey());
 		System.out.println("Cono    : " + lbmxFile.getCompanyNumber());
 		System.out.println("PO Num  : " + lbmxFile.getPoNumber());

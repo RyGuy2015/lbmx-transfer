@@ -33,6 +33,8 @@ public class InboundMonitor {
 	private String ftpAddress;
 	@Value( "${ftpInDirectory}" )
 	private String ftpInDirectory;
+	@Value( "${ftpRemoteInDirectory}" )
+	private String ftpRemoteInDirectory;
 	
 	private FtpClient ftpClient;
 	
@@ -54,13 +56,12 @@ public class InboundMonitor {
 				ftpClient.open();
 				
 				for (String inboundType : inboundTypes) {
-					System.out.println("Type is: " + inboundType);
-					documents = ftpClient.listFiles("/lbmx/in/" + inboundType);
+					documents = ftpClient.listFiles(ftpRemoteInDirectory + inboundType);
 					documents.forEach(document -> {
 						if (!document.contains("arc")) {
 							try {
-								ftpClient.downloadFile("/lbmx/in/" + inboundType + document, ftpInDirectory + document);
-								System.out.println(document);
+								ftpClient.downloadFile(ftpRemoteInDirectory + inboundType + document, ftpInDirectory + inboundType + document);				
+								ftpClient.moveFile(ftpRemoteInDirectory + inboundType + document, ftpRemoteInDirectory + inboundType + "arc/" + document);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -69,6 +70,8 @@ public class InboundMonitor {
 					});
 					
 				}
+				
+				//ftpClient.moveFile("/lbmx/in/997/997-1.txt", "/lbmx/in/997/arc/997-1.txt");
 				
 				ftpClient.close();
 				Thread.sleep(60 * 1000);

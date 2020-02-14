@@ -63,4 +63,8 @@ public class FtpClient {
         ftp.retrieveFile(source, out);
         out.close();
     }
+    
+    void moveFile(String from, String to) throws IOException {
+    	ftp.rename(from, to);
+    }
 }
