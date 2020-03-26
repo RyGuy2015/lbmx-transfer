@@ -53,8 +53,8 @@ public class DirectoryMonitor {
 	LbmxFile lbmxFile = new LbmxFile();
 	
 	
-//	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
-	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
+	AS400 system = new AS400("dps.dpslink.com", "ryani", "Xcode2016");
+//	AS400 system = new AS400("172.16.93.22", "dps80u", "AK2287PGJ");
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMonitor.class);
 
@@ -158,10 +158,10 @@ public class DirectoryMonitor {
 //		for (String part: parts) { 
 //			System.out.println(part);
 //		}
-		System.out.println("LBMX Key: " + lbmxFile.getLbmxKey());
-		System.out.println("Cono    : " + lbmxFile.getCompanyNumber());
-		System.out.println("PO Num  : " + lbmxFile.getPoNumber());
-		System.out.println("FileName: " + lbmxFile.getPoDateFileName());
+		LOGGER.info("LBMX Key: " + lbmxFile.getLbmxKey());
+		LOGGER.info("Cono    : " + lbmxFile.getCompanyNumber());
+		LOGGER.info("PO Num  : " + lbmxFile.getPoNumber());
+		LOGGER.info("FileName: " + lbmxFile.getPoDateFileName());
 
 		
 		

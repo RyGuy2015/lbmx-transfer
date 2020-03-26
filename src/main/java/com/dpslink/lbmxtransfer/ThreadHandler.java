@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,11 @@ public class ThreadHandler {
 	@Autowired
 	InboundMonitor inboundMonitor;
 	
+	@Autowired 
+	IbmCLHandler ibmCLHandler;
 	
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMonitor.class);
+    
 	public ThreadHandler() {
 		
 	}
@@ -32,15 +38,13 @@ public class ThreadHandler {
 				directoryMonitor.monitorDirectory();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("An exception occurred!", new Exception("Custom exception"));
 			}
 			try {
 				inboundMonitor.importLbmxFiles();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("An exception occurred!", new Exception("Custom exception"));
 			}
 	}
-	
-	
 }
